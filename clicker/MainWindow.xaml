@@ -1,0 +1,26 @@
+﻿<Window x:Name="Window" x:Class="Clicker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Clicker"
+        mc:Ignorable="d"
+        Title="Clicker" Width="240" Height="240">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+            <DataGrid ItemsSource="{Binding MouseActions.Actions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" IsReadOnly="{Binding MouseActions.IsRunning, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+        </ScrollViewer>
+        <StackPanel Orientation="Vertical" Grid.Row="1" VerticalAlignment="Bottom">
+            <TextBlock Margin="8,3,0,0">Middle click to record an action.</TextBlock> 
+             <StackPanel Orientation="Horizontal" Margin="3,3,0,0">
+                <Button Content="Run"   Click="RunButton"   IsEnabled="{Binding MouseActions.CanRunOrClear, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="3,3,0,3" Width="60" />
+                <Button Content="Clear" Click="ClearButton" IsEnabled="{Binding MouseActions.CanRunOrClear, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="3,3,0,3" Width="60" />
+                <Button Content="Stop"  Click="StopButton"  IsEnabled="{Binding MouseActions.CanRequestStop, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="3,3,0,3" Width="60" />
+            </StackPanel>          
+        </StackPanel>
+    </Grid>
+</Window>
