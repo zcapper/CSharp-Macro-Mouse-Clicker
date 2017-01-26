@@ -3,9 +3,7 @@
   public partial class MouseAction
   {
     /// <summary>
-    /// Contains function for calling mouse clicks through the Windows API.
-    /// 
-    /// http://stackoverflow.com/questions/8272681/how-can-i-simulate-a-mouse-click-at-a-certain-position-on-the-screen
+    /// Helper functions for simulating mouse clicks through the Windows API.
     /// </summary>
     static class MouseClickHelper
     {
@@ -13,10 +11,61 @@
       static public extern bool SetCursorPos(int x, int y);
 
       [System.Runtime.InteropServices.DllImport("user32.dll")]
-      public static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
+      private static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
 
-      public const int MOUSEEVENTF_LEFTDOWN = 0x02;
-      public const int MOUSEEVENTF_LEFTUP = 0x04;
+      public const int MOUSEEVENTF_LEFTDOWN = 0x0002;
+      public const int MOUSEEVENTF_LEFTUP = 0x0004;
+      public const int MOUSEEVENTF_MIDDLEDOWN = 0x0020;
+      public const int MOUSEEVENTF_MIDDLEUP = 0x0040;
+      public const int MOUSEEVENTF_RIGHTDOWN = 0x0008;
+      public const int MOUSEEVENTF_RIGHTUP = 0x0010;
+
+
+      /// <summary>
+      /// Simulates a mouse button press or release at the specified position.
+      /// </summary>
+      /// <param name="xPos">Horizonal position of mouse cursor.</param>
+      /// <param name="yPos">Vertical position of mouse cursor.</param>
+      /// <param name="ct">Mouse button.</param>
+      /// <param name="mouseDown">Simulates mouse press event if true, otherwise mouse release.</param>
+      public static void Click(int xPos, int yPos, ClickType ct, bool mouseDown)
+      {
+        mouse_event(
+          mouseDown ? MouseClickDownDwFlags(ct) : MouseClickUpDwFlags(ct),
+          xPos,
+          yPos,
+          0,
+          0
+          );
+      }
+
+
+      /// <summary>
+      /// Returns bit flags required to simulate mouse button press for specified button.
+      /// </summary>
+      /// <param name="ct">Mouse button.</param>
+      /// <returns></returns>
+      public static int MouseClickDownDwFlags(ClickType ct)
+      {
+        if (ct == ClickType.LeftClick) { return MOUSEEVENTF_LEFTDOWN; }
+        if (ct == ClickType.MiddleClick) { return MOUSEEVENTF_MIDDLEDOWN; }
+        if (ct == ClickType.RightClick) { return MOUSEEVENTF_RIGHTDOWN; }
+        return 0x0000;
+      }
+
+
+      /// <summary>
+      /// Returns bit flags required to simulate mouse button release for specified button.
+      /// </summary>
+      /// <param name="ct">Mouse button.</param>
+      /// <returns></returns>
+      public static int MouseClickUpDwFlags(ClickType ct)
+      {
+        if (ct == ClickType.LeftClick) { return MOUSEEVENTF_LEFTUP; }
+        if (ct == ClickType.MiddleClick) { return MOUSEEVENTF_MIDDLEUP; }
+        if (ct == ClickType.RightClick) { return MOUSEEVENTF_RIGHTUP; }
+        return 0x0000;
+      }
     }
   }
 }

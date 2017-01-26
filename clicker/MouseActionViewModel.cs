@@ -27,6 +27,9 @@ namespace Clicker
 
     bool _isRunning = false;
 
+    /// <summary>
+    /// Whether a mouse macro is currently running.
+    /// </summary>
     public bool IsRunning
     {
       get
@@ -50,6 +53,9 @@ namespace Clicker
 
     bool _isStopRequested = false;
 
+    /// <summary>
+    /// Flag used to stop running thread simulating mouse macro.
+    /// </summary>
     public bool IsStopRequested
     {
       get
@@ -62,8 +68,6 @@ namespace Clicker
         {
           _isStopRequested = value;
 
-          StopRequested?.Invoke(this, new EventArgs());
-
           PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CanRequestStop"));
         }
       }
@@ -71,7 +75,6 @@ namespace Clicker
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    event EventHandler StopRequested;
 
     public MouseActionViewModel()
     {
@@ -96,17 +99,17 @@ namespace Clicker
         {
           foreach (MouseAction ma in Actions)
           {
-            if (!IsStopRequested) { ma.Click(); }
+            if (!IsStopRequested) { ma.RunClick(); }
 
             if (!IsStopRequested) { ma.RunCooldown(ref _isStopRequested); }
           }
         }
 
-        App.Current.Dispatcher.Invoke(() => 
+        App.Current?.Dispatcher.Invoke(() => 
         {
-          IsRunning = false;
+            IsRunning = false;
 
-          IsStopRequested = false;
+            IsStopRequested = false;
         });
       });
 

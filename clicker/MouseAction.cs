@@ -7,20 +7,34 @@ namespace Clicker
   /// </summary>
   public partial class MouseAction
   {
-    public int XPos { get; set; }
+    /// <summary>
+    /// Horizonal position of mouse cursor.
+    /// </summary>
+    public int XPosition { get; set; }
 
-    public int YPos { get; set; }
+    /// <summary>
+    /// Vertical position of mouse cursor.
+    /// </summary>
+    public int YPosition { get; set; }
 
+    /// <summary>
+    /// Time to wait after performing click.
+    /// </summary>
     public TimeSpan Cooldown { get; set; }
+
+    /// <summary>
+    /// The mouse button to use when simulating a click.
+    /// </summary>
+    public ClickType Button { get; set; }
 
 
     /// <summary>
     /// Creates a new MouseAction with given position and default cooldown time.
     /// </summary>
-    /// <param name="xpos">Horizonal position of mouse cursor</param>
-    /// <param name="ypos">Vertical position of mouse cursor</param>
-    public MouseAction(int xpos, int ypos) 
-      : this(xpos, ypos, new TimeSpan(0, 0, 10))
+    /// <param name="xPosition">Horizonal position of mouse cursor.</param>
+    /// <param name="yPosition">Vertical position of mouse cursor.</param>
+    public MouseAction(int xPosition, int yPosition) 
+      : this(xPosition, yPosition, new TimeSpan(0, 0, 10))
     {
     }
 
@@ -28,39 +42,30 @@ namespace Clicker
     /// <summary>
     /// Creates a new MouseAction with given position and cooldown time.
     /// </summary>
-    /// <param name="xpos">Horizonal position of mouse cursor</param>
-    /// <param name="ypos">Vertical position of mouse cursor</param>
+    /// <param name="xPosition">Horizonal position of mouse cursor</param>
+    /// <param name="yPosition">Vertical position of mouse cursor</param>
     /// <param name="cooldown">Time to wait after performing action</param>
-    public MouseAction(int xpos, int ypos, TimeSpan cooldown)
+    public MouseAction(int xPosition, int yPosition, TimeSpan cooldown)
     {
-      XPos = xpos;
-      YPos = ypos;
+      XPosition = xPosition;
+      YPosition = yPosition;
       Cooldown = cooldown;
+      Button = ClickType.LeftClick;
     }
 
 
     /// <summary>
-    /// Plays mouse action.
+    /// Simulates this mouse action.
     /// </summary>
-    public void Click()
+    public void RunClick()
     {
-      MouseClickHelper.SetCursorPos(XPos, YPos);
+      MouseClickHelper.SetCursorPos(XPosition, YPosition);
 
-      MouseClickHelper.mouse_event(
-        MouseClickHelper.MOUSEEVENTF_LEFTDOWN,
-        XPos,
-        YPos,
-        0,
-        0);
+      MouseClickHelper.Click(XPosition, YPosition, Button, true);
 
       System.Threading.Thread.Sleep(1);
 
-      MouseClickHelper.mouse_event(
-        MouseClickHelper.MOUSEEVENTF_LEFTUP,
-        XPos,
-        YPos,
-        0,
-        0);
+      MouseClickHelper.Click(XPosition, YPosition, Button, false);
     }
 
 
@@ -74,9 +79,9 @@ namespace Clicker
 
 
     /// <summary>
-    /// Pauses thread for duration of Cooldown or until signal is true.
+    /// Pauses thread for duration of Cooldown or until the specified bool is true.
     /// </summary>
-    /// <param name="earlyStopSignal"></param>
+    /// <param name="earlyStopSignal">The timer will monitor this value and stop when it equals true.</param>
     public void RunCooldown(ref bool earlyStopSignal)
     {
       TimeSpan t = Cooldown;

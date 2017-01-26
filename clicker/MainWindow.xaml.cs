@@ -36,7 +36,7 @@ namespace Clicker
 
       App.Current.Exit += (object sender, ExitEventArgs e) =>
       {
-        MouseActions.IsStopRequested = false;
+        MouseActions.IsStopRequested = true;
         M?.Stop();
       };
 
