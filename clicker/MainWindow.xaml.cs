@@ -14,6 +14,7 @@ namespace Clicker
     public partial class MainWindow : Window
     {
         public MouseActionViewModel MouseActions { get; set; }
+        public string autosaveFileName = "autosave.json";
 
         MouseHookListener M;
 
@@ -23,15 +24,18 @@ namespace Clicker
 
             MouseActions = new MouseActionViewModel();
 
-            var autoload = File.ReadAllText("autosave.json");
-            var actions = JsonConvert.DeserializeObject<JArray>(autoload);
-            foreach(var action in actions)
+            if (File.Exists(autosaveFileName))
             {
-                var xPosition = (int)action["XPosition"];
-                var yPosition = (int)action["YPosition"];
-                var cooldown = (TimeSpan)action["Cooldown"];
-                var button = (int)action["Button"];
-                MouseActions.Actions.Add(new MouseAction(xPosition, yPosition, cooldown, button));
+                var autoload = File.ReadAllText(autosaveFileName);
+                var actions = JsonConvert.DeserializeObject<JArray>(autoload);
+                foreach (var action in actions)
+                {
+                    var xPosition = (int)action["XPosition"];
+                    var yPosition = (int)action["YPosition"];
+                    var cooldown = (TimeSpan)action["Cooldown"];
+                    var button = (int)action["Button"];
+                    MouseActions.Actions.Add(new MouseAction(xPosition, yPosition, cooldown, button));
+                }
             }
 
             MouseKeyboardActivityMonitor.WinApi.GlobalHooker h = new MouseKeyboardActivityMonitor.WinApi.GlobalHooker();
@@ -54,7 +58,7 @@ namespace Clicker
                 MouseActions.IsStopRequested = true;
                 M?.Stop();
 
-                WriteToJsonFile<Collection<MouseAction>>("autosave.json", MouseActions.Actions);
+                WriteToJsonFile<Collection<MouseAction>>(autosaveFileName, MouseActions.Actions);
             };
 
             M.Start();
