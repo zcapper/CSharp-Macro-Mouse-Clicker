@@ -1,6 +1,6 @@
 ﻿namespace Clicker
 {
-  public partial class MouseAction
+  public partial class Action
   {
     /// <summary>
     /// Helper functions for simulating mouse clicks through the Windows API.
