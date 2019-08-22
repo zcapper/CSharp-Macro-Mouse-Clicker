@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace Clicker
 {
     /// <summary>
     /// Represents a mouse click at a given position on the screen. 
     /// </summary>
-    public partial class MouseAction
+    public partial class Action
     {
         /// <summary>
         /// Horizonal position of mouse cursor.
@@ -22,18 +23,21 @@ namespace Clicker
         /// </summary>
         public TimeSpan Cooldown { get; set; }
 
+        public ActionType Type { get; set; }
+
         /// <summary>
         /// The mouse button to use when simulating a click.
         /// </summary>
         public ClickType Button { get; set; }
 
+        public string Text { get; set; }
 
         /// <summary>
         /// Creates a new MouseAction with given position and default cooldown time.
         /// </summary>
         /// <param name="xPosition">Horizonal position of mouse cursor.</param>
         /// <param name="yPosition">Vertical position of mouse cursor.</param>
-        public MouseAction(int xPosition, int yPosition)
+        public Action(int xPosition, int yPosition)
           : this(xPosition, yPosition, new TimeSpan(0, 0, 10))
         {
         }
@@ -45,12 +49,14 @@ namespace Clicker
         /// <param name="xPosition">Horizonal position of mouse cursor</param>
         /// <param name="yPosition">Vertical position of mouse cursor</param>
         /// <param name="cooldown">Time to wait after performing action</param>
-        public MouseAction(int xPosition, int yPosition, TimeSpan cooldown, ClickType button = ClickType.LeftClick)
+        public Action(int xPosition, int yPosition, TimeSpan cooldown, ClickType button = ClickType.LeftClick, ActionType type = ActionType.Click, string text = null)
         {
             XPosition = xPosition;
             YPosition = yPosition;
             Cooldown = cooldown;
+            Type = type;
             Button = button;
+            Text = text;
         }
 
         /// <summary>
@@ -65,6 +71,14 @@ namespace Clicker
             System.Threading.Thread.Sleep(1);
 
             MouseClickHelper.Click(XPosition, YPosition, Button, false);
+        }
+
+        /// <summary>
+        /// Simulates typing.
+        /// </summary>
+        public void RunType()
+        {
+            SendKeys.SendWait(Text);
         }
 
 
@@ -100,5 +114,18 @@ namespace Clicker
                 }
             }
         }
+    }
+
+    public enum ActionType
+    {
+        Click,
+        Type
+    }
+
+    public enum ClickType
+    {
+        LeftClick,
+        MiddleClick,
+        RightClick
     }
 }
