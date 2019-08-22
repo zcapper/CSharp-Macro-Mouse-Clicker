@@ -45,25 +45,13 @@ namespace Clicker
         /// <param name="xPosition">Horizonal position of mouse cursor</param>
         /// <param name="yPosition">Vertical position of mouse cursor</param>
         /// <param name="cooldown">Time to wait after performing action</param>
-        public MouseAction(int xPosition, int yPosition, TimeSpan cooldown, int? button = 0)
+        public MouseAction(int xPosition, int yPosition, TimeSpan cooldown, ClickType button = ClickType.LeftClick)
         {
             XPosition = xPosition;
             YPosition = yPosition;
             Cooldown = cooldown;
-            switch (button)
-            {
-                case 1:
-                    Button = ClickType.MiddleClick;
-                    break;
-                case 2:
-                    Button = ClickType.RightClick;
-                    break;
-                default:
-                    Button = ClickType.LeftClick;
-                    break;
-            }
+            Button = button;
         }
-
 
         /// <summary>
         /// Simulates this mouse action.
