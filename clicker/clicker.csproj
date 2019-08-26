@@ -97,7 +97,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MouseAction.ClickType.cs" />
     <Compile Include="MouseAction.cs" />
     <Compile Include="MouseAction.MouseClickHelper.cs" />
     <Compile Include="MouseActionViewModel.cs" />
