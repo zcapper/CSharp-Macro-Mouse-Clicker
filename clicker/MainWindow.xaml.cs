@@ -33,8 +33,10 @@ namespace Clicker
                     var xPosition = (int)action["XPosition"];
                     var yPosition = (int)action["YPosition"];
                     var cooldown = (TimeSpan)action["Cooldown"];
-                    var button = (int)action["Button"];
-                    MouseActions.Actions.Add(new MouseAction(xPosition, yPosition, cooldown, button));
+                    var type = (ActionType)(int)action["Type"];
+                    var clickType = (ClickType)(int)action["Button"];
+                    var text = (string)action["Text"];
+                    MouseActions.Actions.Add(new Action(xPosition, yPosition, cooldown, clickType, type, text));
                 }
             }
 
@@ -46,7 +48,7 @@ namespace Clicker
             {
                 if (e.Button == System.Windows.Forms.MouseButtons.Middle && MouseActions.IsRunning == false)
                 {
-                    MouseActions.Actions.Add(new MouseAction(
+                    MouseActions.Actions.Add(new Action(
                 e.X,
                 e.Y
                 ));
@@ -58,7 +60,7 @@ namespace Clicker
                 MouseActions.IsStopRequested = true;
                 M?.Stop();
 
-                WriteToJsonFile<Collection<MouseAction>>(autosaveFileName, MouseActions.Actions);
+                WriteToJsonFile<Collection<Action>>(autosaveFileName, MouseActions.Actions);
             };
 
             M.Start();
