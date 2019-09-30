@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Clicker"
         mc:Ignorable="d"
-        Title="Clicker" SizeToContent="Width" Height="225" Width="240">
+        Title="Clicker" SizeToContent="Width" Height="299" Width="391">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -14,13 +14,14 @@
         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
             <DataGrid ItemsSource="{Binding MouseActions.Actions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" IsReadOnly="{Binding MouseActions.IsRunning, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
         </ScrollViewer>
-        <StackPanel Orientation="Vertical" Grid.Row="1" VerticalAlignment="Bottom">
-            <TextBlock Margin="8,3,0,0">Middle click to record a new click.</TextBlock> 
-             <StackPanel Orientation="Horizontal" Margin="3,3,0,0">
+        <StackPanel Orientation="Vertical" Grid.Row="1" VerticalAlignment="Bottom" Height="73" Margin="0,0,0,-23">
+            <TextBlock Margin="8,3,0,0"><Run Text="Middle click to record a new click."/></TextBlock>
+            <StackPanel Orientation="Horizontal" Margin="3,3,0,0">
                 <Button Content="Run"   Click="RunButton"   IsEnabled="{Binding MouseActions.CanRunOrClear, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="3,3,0,3" Width="60" />
                 <Button Content="Clear" Click="ClearButton" IsEnabled="{Binding MouseActions.CanRunOrClear, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="3,3,0,3" Width="60" />
                 <Button Content="Stop"  Click="StopButton"  IsEnabled="{Binding MouseActions.CanRequestStop, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="3,3,0,3" Width="60" />
-            </StackPanel>          
+                <CheckBox x:Name="AutorunCheckbox" Content="Autorun" Height="18" Width="94" Margin="30,0,0,0" Click="AutorunCheckbox_Click" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>
