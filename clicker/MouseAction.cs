@@ -33,17 +33,6 @@ namespace Clicker
         public string Text { get; set; }
 
         /// <summary>
-        /// Creates a new MouseAction with given position and default cooldown time.
-        /// </summary>
-        /// <param name="xPosition">Horizonal position of mouse cursor.</param>
-        /// <param name="yPosition">Vertical position of mouse cursor.</param>
-        public Action(int xPosition, int yPosition)
-          : this(xPosition, yPosition, new TimeSpan(0, 0, 10))
-        {
-        }
-
-
-        /// <summary>
         /// Creates a new MouseAction with given position and cooldown time.
         /// </summary>
         /// <param name="xPosition">Horizonal position of mouse cursor</param>

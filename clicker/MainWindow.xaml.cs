@@ -14,8 +14,7 @@ namespace Clicker
     public partial class MainWindow : Window
     {
         public MouseActionViewModel MouseActions { get; set; }
-        public string autosaveFileName = "autosave.json";
-
+        public Settings Settings { get; set; }
         MouseHookListener M;
 
         public MainWindow()
@@ -23,10 +22,17 @@ namespace Clicker
             InitializeComponent();
 
             MouseActions = new MouseActionViewModel();
+            Settings = new Settings();
 
-            if (File.Exists(autosaveFileName))
+            if (File.Exists(Settings.SettingsFilename))
             {
-                var autoload = File.ReadAllText(autosaveFileName);
+                Settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(Settings.SettingsFilename));
+                AutorunCheckbox.IsChecked = Settings.Autorun;
+            }
+
+            if (File.Exists(Settings.AutosaveFilename))
+            {
+                var autoload = File.ReadAllText(Settings.AutosaveFilename);
                 var actions = JsonConvert.DeserializeObject<JArray>(autoload);
                 foreach (var action in actions)
                 {
@@ -38,10 +44,12 @@ namespace Clicker
                     var text = (string)action["Text"];
                     MouseActions.Actions.Add(new Action(xPosition, yPosition, cooldown, clickType, type, text));
                 }
+
+                if (Settings.Autorun) MouseActions.RunActions();
             }
 
             MouseKeyboardActivityMonitor.WinApi.GlobalHooker h = new MouseKeyboardActivityMonitor.WinApi.GlobalHooker();
-            
+
             M = new MouseHookListener(h);
 
             M.MouseClick += (object s, System.Windows.Forms.MouseEventArgs e) =>
@@ -50,7 +58,8 @@ namespace Clicker
                 {
                     MouseActions.Actions.Add(new Action(
                 e.X,
-                e.Y
+                e.Y,
+                Settings.DefaultCooldown
                 ));
                 }
             };
@@ -60,7 +69,8 @@ namespace Clicker
                 MouseActions.IsStopRequested = true;
                 M?.Stop();
 
-                WriteToJsonFile<Collection<Action>>(autosaveFileName, MouseActions.Actions);
+                WriteToJsonFile<Collection<Action>>(Settings.AutosaveFilename, MouseActions.Actions);
+                WriteToJsonFile<Settings>(Settings.SettingsFilename, Settings);
             };
 
             M.Start();
@@ -81,11 +91,16 @@ namespace Clicker
                     writer.Close();
             }
         }
-        
+
         private void ClearButton(object sender, RoutedEventArgs e) { MouseActions.Actions.Clear(); }
 
         private void RunButton(object sender, RoutedEventArgs e) { MouseActions.RunActions(); }
 
         private void StopButton(object sender, RoutedEventArgs e) { MouseActions.IsStopRequested = true; }
+
+        private void AutorunCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Autorun = AutorunCheckbox.IsChecked ?? false;
+        }
     }
 }
