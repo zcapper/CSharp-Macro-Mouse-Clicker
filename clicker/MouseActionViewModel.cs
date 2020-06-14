@@ -2,12 +2,15 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
+using MouseKeyboardActivityMonitor;
 
 namespace Clicker
 {
     public class MouseActionViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Action> Actions { get; set; }
+        private Settings Settings;
+
 
         public bool CanRunOrClear
         {
@@ -75,8 +78,7 @@ namespace Clicker
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-
-        public MouseActionViewModel()
+        public MouseActionViewModel(Settings Settings)
         {
             Actions = new ObservableCollection<Action>();
 
@@ -86,8 +88,9 @@ namespace Clicker
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CanRunOrClear"));
             };
-        }
 
+            this.Settings = Settings;
+        }
 
         public void RunActions()
         {
@@ -95,25 +98,28 @@ namespace Clicker
 
             Thread t = new Thread(() =>
             {
-
-                foreach (Action ma in Actions)
+                do
                 {
-                    if (!IsStopRequested)
+                    foreach (Action ma in Actions)
                     {
-                        if (ma.Type == ActionType.Click) ma.RunClick();
-                        if (ma.Type == ActionType.Type) ma.RunType();
+                        if (!IsStopRequested)
+                        {
+                            if (ma.Type == ActionType.Click) ma.RunClick();
+                            if (ma.Type == ActionType.Type) ma.RunType();
 
+                        }
+
+                        if (!IsStopRequested) { ma.RunCooldown(ref _isStopRequested); }
                     }
 
-                    if (!IsStopRequested) { ma.RunCooldown(ref _isStopRequested); }
-                }
+                    App.Current?.Dispatcher.Invoke(() =>
+                    {
+                        IsRunning = false;
 
-                App.Current?.Dispatcher.Invoke(() =>
-                {
-                    IsRunning = false;
+                        IsStopRequested = false;
+                    });
 
-                    IsStopRequested = false;
-                });
+                } while (Settings.Autorun);
             });
 
             t.Start();

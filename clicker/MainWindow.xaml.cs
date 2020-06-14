@@ -21,14 +21,15 @@ namespace Clicker
         {
             InitializeComponent();
 
-            MouseActions = new MouseActionViewModel();
-            Settings = new Settings();
+            Settings = new Settings();           
 
             if (File.Exists(Settings.SettingsFilename))
             {
                 Settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(Settings.SettingsFilename));
                 AutorunCheckbox.IsChecked = Settings.Autorun;
             }
+
+            MouseActions = new MouseActionViewModel(Settings);
 
             if (File.Exists(Settings.AutosaveFilename))
             {
@@ -64,7 +65,16 @@ namespace Clicker
                 }
             };
 
-            App.Current.Exit += (object sender, ExitEventArgs e) =>
+            M.MouseDoubleClick += (object s, System.Windows.Forms.MouseEventArgs e) =>
+            {
+                if (e.Button == System.Windows.Forms.MouseButtons.Right)
+                {
+                    Settings.Autorun = false;
+                    AutorunCheckbox.IsChecked = Settings.Autorun;
+                }
+            };
+
+           App.Current.Exit += (object sender, ExitEventArgs e) =>
             {
                 MouseActions.IsStopRequested = true;
                 M?.Stop();
