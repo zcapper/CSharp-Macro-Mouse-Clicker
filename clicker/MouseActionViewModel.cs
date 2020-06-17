@@ -118,10 +118,6 @@ namespace Clicker
                         {
                             System.Threading.Thread.Sleep(1000);
                         }
-                        if (RuntimeSettings.Reset) {
-                            RuntimeSettings.Step = 0;
-                            RuntimeSettings.Reset = false;
-                        }
                     }
 
                     App.Current?.Dispatcher.Invoke(() =>

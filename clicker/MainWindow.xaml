@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Clicker"
         mc:Ignorable="d"
-        Title="Clicker" SizeToContent="Width" Height="299" Width="445.667">
-    <Grid>
-        
+        Title="Clicker" SizeToContent="Width" Height="346.37" Width="368.067">
+    <Grid Margin="0,0,-0.4,12">
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
-            <DataGrid Name="dataGrid" ItemsSource="{Binding MouseActions.Actions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" IsReadOnly="{Binding MouseActions.IsRunning, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" >
+            <DataGrid Name="dataGrid" ItemsSource="{Binding MouseActions.Actions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" IsReadOnly="{Binding MouseActions.IsRunning, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Height="236" >
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Style.Triggers>
@@ -31,7 +31,7 @@
                 </DataGrid.RowStyle>
             </DataGrid>
         </ScrollViewer>
-        <StackPanel Orientation="Vertical" Grid.Row="1" VerticalAlignment="Bottom" Height="50">
+        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Height="50" Margin="0,0,0.2,0" Grid.RowSpan="2">
             <TextBlock Margin="8,3,0,0"><Run Text="Middle click to record a new click."/></TextBlock>
             <StackPanel Orientation="Horizontal" Margin="3,3,0,0">
                 <Button Content="Run"   Click="RunButton"   IsEnabled="{Binding MouseActions.CanRunOrClear, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="3,3,0,3" Width="60" />
@@ -39,8 +39,13 @@
                 <Button Content="Stop"  Click="StopButton"  IsEnabled="{Binding MouseActions.CanRequestStop, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="3,3,0,3" Width="60" />
                 <Button Content="Reset"  Click="ResetButton"  Margin="3,3,0,3" Width="60" />
                 <CheckBox x:Name="AutorunCheckbox" Content="Autorun" Height="18" Width="65" Margin="30,0,0,0" Click="AutorunCheckbox_Click" />
-                <CheckBox x:Name="PausedCheckbox" Content="Paused" Height="18" Width="61" Margin="30,0,0,0" Click="AutorunCheckbox_Click" />
             </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="3,50.2,0.6,-22.8" RenderTransformOrigin="0.5,0.5" Grid.Row="1">
+            <Label x:Name="label" Content="Step Action:" Width="66" Margin="0,0,0,0.2" FontSize="10"/>
+            <TextBox x:Name="TextBox" TextWrapping="Wrap" Width="124" Height="19" VerticalAlignment="Center" FontSize="12" KeyDown="TextBox_KeyPress" Margin="0,2,0,2.2" RenderTransformOrigin="0.515,-0.278" />
+            <Button Content="Go"  Click="GoToStepButton"  Margin="3,2,0,2" Width="60" />
+            <CheckBox x:Name="PausedCheckbox" Content="Paused" Width="70" Margin="30,2,0,2.2" Click="PausedCheckbox_Click" RenderTransformOrigin="-1.316,2.422" />
         </StackPanel>
     </Grid>
 </Window>

@@ -23,7 +23,6 @@ namespace Clicker
                 OnStepChanged(EventArgs.Empty);
             }
         }
-        public bool Reset { get; set; }
 
         public delegate void StepChangedEventHandler(object source, EventArgs args);
         public event EventHandler StepChanged;
@@ -32,7 +31,6 @@ namespace Clicker
         {
             Pause = false;
             _step = 0;
-            Reset = false;
         }
 
         protected virtual void OnStepChanged(EventArgs e)

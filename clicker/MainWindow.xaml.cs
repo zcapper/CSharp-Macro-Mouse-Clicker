@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using MouseKeyboardActivityMonitor;
 using Newtonsoft.Json;
@@ -42,6 +43,7 @@ namespace Clicker
                     {
                         this.dataGrid.SelectedIndex = RuntimeSettings.Step;
                         this.dataGrid.ScrollIntoView(this.dataGrid.Items.GetItemAt(RuntimeSettings.Step));
+                        this.TextBox.Text ="" + RuntimeSettings.Step;
                     });
                 }
             };
@@ -130,21 +132,40 @@ namespace Clicker
             }
         }
 
-        private void ClearButton(object sender, RoutedEventArgs e) { MouseActions.Actions.Clear(); }
+        private void ClearButton(object sender, RoutedEventArgs e) { MouseActions.Actions.Clear(); TextBox.Text = ""; }
 
         private void RunButton(object sender, RoutedEventArgs e) { MouseActions.RunActions(); }
 
-        private void ResetButton(object sender, RoutedEventArgs e) { RuntimeSettings.Reset = true; }
+        private void ResetButton(object sender, RoutedEventArgs e) { 
+            RuntimeSettings.Step = 0; 
+            this.dataGrid.SelectedIndex = RuntimeSettings.Step;
+            this.dataGrid.ScrollIntoView(this.dataGrid.Items.GetItemAt(RuntimeSettings.Step));
+        }
 
         private void StopButton(object sender, RoutedEventArgs e) { MouseActions.IsStopRequested = true; }
+
+        private void GoToStepButton(object sender, RoutedEventArgs e) { 
+            try {
+                RuntimeSettings.Step = Int32.Parse(TextBox.Text);
+            } catch (Exception exception) {
+                TextBox.Text = exception.Message;
+            }
+        }
 
         private void AutorunCheckbox_Click(object sender, RoutedEventArgs e)
         {
             Settings.Autorun = AutorunCheckbox.IsChecked ?? false;
         }
-        private void PauseCkeckbox_Click(object sender, RoutedEventArgs e)
+        private void PausedCheckbox_Click(object sender, RoutedEventArgs e)
         {
             RuntimeSettings.Pause = PausedCheckbox.IsChecked ?? false;
+        }
+
+        private void TextBox_KeyPress(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (System.Text.RegularExpressions.Regex.IsMatch(e.Key.ToString(), "[0-9]"))
+                e.Handled = false;
+            else e.Handled = true;
         }
 
     }
