@@ -19,10 +19,8 @@ namespace Clicker
             }
             set
             {
-                if (_step == value) return;
                 _step = value;
-
-                OnStepChanged();
+                OnStepChanged(EventArgs.Empty);
             }
         }
         public bool Reset { get; set; }
@@ -37,11 +35,9 @@ namespace Clicker
             Reset = false;
         }
 
-        protected virtual void OnStepChanged()
+        protected virtual void OnStepChanged(EventArgs e)
         {
-            if (StepChanged != null) {
-                StepChanged(StepChanged, EventArgs.Empty);
-            }
+            StepChanged?.Invoke(this, e);
         }
     }
 }

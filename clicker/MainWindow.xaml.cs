@@ -27,13 +27,6 @@ namespace Clicker
             Settings = new Settings();
             RuntimeSettings = new RuntimeSettings();
 
-            RuntimeSettings.StepChanged += (object sender, EventArgs args) => {
-                // sender?.Invoke();
-
-                this.dataGrid.SelectedIndex = MouseActions.Actions.Count;
-                this.dataGrid.ScrollIntoView(this.dataGrid.Items.GetItemAt(MouseActions.Actions.Count));
-            };
-
             if (File.Exists(Settings.SettingsFilename))
             {
                 Settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(Settings.SettingsFilename));
@@ -41,6 +34,17 @@ namespace Clicker
             }
 
             MouseActions = new MouseActionViewModel(Settings, RuntimeSettings);
+
+            RuntimeSettings.StepChanged += (object sender, EventArgs args) => {
+                if (RuntimeSettings.Step < MouseActions.Actions.Count)
+                {
+                    App.Current?.Dispatcher.Invoke(() =>
+                    {
+                        this.dataGrid.SelectedIndex = RuntimeSettings.Step;
+                        this.dataGrid.ScrollIntoView(this.dataGrid.Items.GetItemAt(RuntimeSettings.Step));
+                    });
+                }
+            };
 
             if (File.Exists(Settings.AutosaveFilename))
             {
