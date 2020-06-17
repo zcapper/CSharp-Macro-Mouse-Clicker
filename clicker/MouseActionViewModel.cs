@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
-using System.Windows.Controls;
-using MouseKeyboardActivityMonitor;
 
 namespace Clicker
 {

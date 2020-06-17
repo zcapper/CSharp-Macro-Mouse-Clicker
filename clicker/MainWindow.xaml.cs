@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Input;
 using MouseKeyboardActivityMonitor;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -41,8 +40,8 @@ namespace Clicker
                 {
                     App.Current?.Dispatcher.Invoke(() =>
                     {
-                        this.dataGrid.SelectedIndex = RuntimeSettings.Step;
-                        this.dataGrid.ScrollIntoView(this.dataGrid.Items.GetItemAt(RuntimeSettings.Step));
+                        this.DataGrid.SelectedIndex = RuntimeSettings.Step;
+                        this.DataGrid.ScrollIntoView(this.DataGrid.Items.GetItemAt(RuntimeSettings.Step));
                         this.TextBox.Text ="" + RuntimeSettings.Step;
                     });
                 }
@@ -138,8 +137,8 @@ namespace Clicker
 
         private void ResetButton(object sender, RoutedEventArgs e) { 
             RuntimeSettings.Step = 0; 
-            this.dataGrid.SelectedIndex = RuntimeSettings.Step;
-            this.dataGrid.ScrollIntoView(this.dataGrid.Items.GetItemAt(RuntimeSettings.Step));
+            this.DataGrid.SelectedIndex = RuntimeSettings.Step;
+            this.DataGrid.ScrollIntoView(this.DataGrid.Items.GetItemAt(RuntimeSettings.Step));
         }
 
         private void StopButton(object sender, RoutedEventArgs e) { MouseActions.IsStopRequested = true; }

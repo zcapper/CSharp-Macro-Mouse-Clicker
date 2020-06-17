@@ -13,18 +13,14 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
-            <DataGrid Name="dataGrid" ItemsSource="{Binding MouseActions.Actions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" IsReadOnly="{Binding MouseActions.IsRunning, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Height="236" >
+            <DataGrid Name="DataGrid" ItemsSource="{Binding MouseActions.Actions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" IsReadOnly="{Binding MouseActions.IsRunning, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Height="236" >
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Style.Triggers>
-                            <Trigger Property="IsSelected"
-                        Value="True">
-                                <Setter Property="BorderBrush"
-                        Value="Yellow" />
-                                <Setter Property="BorderThickness"
-                        Value="2" />
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="Yellow" />
+                                <Setter Property="BorderThickness" Value="2" />
                                 <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-
                             </Trigger>
                         </Style.Triggers>
                     </Style>
