@@ -120,10 +120,10 @@ namespace Clicker
                     App.Current?.Dispatcher.Invoke(() =>
                     {
                         IsRunning = false;
-
                         IsStopRequested = false;
+                        RuntimeSettings.Step = 0;
                     });
-
+                    
                 } while (Settings.Autorun);
             });
 

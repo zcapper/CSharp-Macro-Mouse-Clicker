@@ -17,7 +17,7 @@ namespace Clicker
     {
         public MouseActionViewModel MouseActions { get; set; }
         public Settings Settings { get; set; }
-        public RuntimeSettings RuntimeSettings { get; set; }
+        private RuntimeSettings RuntimeSettings;
         MouseHookListener M;
 
         public MainWindow()
