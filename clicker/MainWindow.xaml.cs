@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using MouseKeyboardActivityMonitor;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -15,13 +17,22 @@ namespace Clicker
     {
         public MouseActionViewModel MouseActions { get; set; }
         public Settings Settings { get; set; }
+        public RuntimeSettings RuntimeSettings { get; set; }
         MouseHookListener M;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            Settings = new Settings();           
+            Settings = new Settings();
+            RuntimeSettings = new RuntimeSettings();
+
+            RuntimeSettings.StepChanged += (object sender, EventArgs args) => {
+                // sender?.Invoke();
+
+                this.dataGrid.SelectedIndex = MouseActions.Actions.Count;
+                this.dataGrid.ScrollIntoView(this.dataGrid.Items.GetItemAt(MouseActions.Actions.Count));
+            };
 
             if (File.Exists(Settings.SettingsFilename))
             {
@@ -29,7 +40,7 @@ namespace Clicker
                 AutorunCheckbox.IsChecked = Settings.Autorun;
             }
 
-            MouseActions = new MouseActionViewModel(Settings);
+            MouseActions = new MouseActionViewModel(Settings, RuntimeSettings);
 
             if (File.Exists(Settings.AutosaveFilename))
             {
@@ -43,7 +54,7 @@ namespace Clicker
                     var type = (ActionType)(int)action["Type"];
                     var clickType = (ClickType)(int)action["Button"];
                     var text = (string)action["Text"];
-                    MouseActions.Actions.Add(new Action(xPosition, yPosition, cooldown, clickType, type, text));
+                    MouseActions.Actions.Add(new Action(MouseActions.Actions.Count,xPosition, yPosition, cooldown, clickType, type, text));
                 }
 
                 if (Settings.Autorun) MouseActions.RunActions();
@@ -55,13 +66,26 @@ namespace Clicker
 
             M.MouseClick += (object s, System.Windows.Forms.MouseEventArgs e) =>
             {
-                if (e.Button == System.Windows.Forms.MouseButtons.Middle && MouseActions.IsRunning == false)
+                if (e.Button == System.Windows.Forms.MouseButtons.Middle)
                 {
-                    MouseActions.Actions.Add(new Action(
-                e.X,
-                e.Y,
-                Settings.DefaultCooldown
-                ));
+                    if (MouseActions.IsRunning == false)
+                    {
+                        MouseActions.Actions.Add(new Action(MouseActions.Actions.Count,
+                            e.X,
+                            e.Y,
+                            Settings.DefaultCooldown
+                        ));                        
+                    }
+                    else {
+                        if (RuntimeSettings.Pause)
+                        {
+                            MouseActions.Actions.Insert(RuntimeSettings.Step, new Action(MouseActions.Actions.Count,
+                                e.X,
+                                e.Y,
+                                Settings.DefaultCooldown
+                            ));
+                        }
+                    }
                 }
             };
 
@@ -69,8 +93,8 @@ namespace Clicker
             {
                 if (e.Button == System.Windows.Forms.MouseButtons.Right)
                 {
-                    Settings.Autorun = false;
-                    AutorunCheckbox.IsChecked = Settings.Autorun;
+                    RuntimeSettings.Pause = !RuntimeSettings.Pause;
+                    PausedCheckbox.IsChecked = RuntimeSettings.Pause;
                 }
             };
 
@@ -106,11 +130,18 @@ namespace Clicker
 
         private void RunButton(object sender, RoutedEventArgs e) { MouseActions.RunActions(); }
 
+        private void ResetButton(object sender, RoutedEventArgs e) { RuntimeSettings.Reset = true; }
+
         private void StopButton(object sender, RoutedEventArgs e) { MouseActions.IsStopRequested = true; }
 
         private void AutorunCheckbox_Click(object sender, RoutedEventArgs e)
         {
             Settings.Autorun = AutorunCheckbox.IsChecked ?? false;
         }
+        private void PauseCkeckbox_Click(object sender, RoutedEventArgs e)
+        {
+            RuntimeSettings.Pause = PausedCheckbox.IsChecked ?? false;
+        }
+
     }
 }

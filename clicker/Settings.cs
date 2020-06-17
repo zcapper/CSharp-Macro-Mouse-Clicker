@@ -12,6 +12,7 @@ namespace Clicker
         public string AutosaveFilename { get; set; }
         public string SettingsFilename { get; set; }
         public TimeSpan DefaultCooldown { get; set; }
+        
 
         public Settings()
         {

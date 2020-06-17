@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
+using System.Windows.Controls;
 using MouseKeyboardActivityMonitor;
 
 namespace Clicker
@@ -10,7 +11,7 @@ namespace Clicker
     {
         public ObservableCollection<Action> Actions { get; set; }
         private Settings Settings;
-
+        private RuntimeSettings RuntimeSettings;
 
         public bool CanRunOrClear
         {
@@ -78,7 +79,7 @@ namespace Clicker
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MouseActionViewModel(Settings Settings)
+        public MouseActionViewModel(Settings Settings, RuntimeSettings RuntimeSettings)
         {
             Actions = new ObservableCollection<Action>();
 
@@ -90,6 +91,7 @@ namespace Clicker
             };
 
             this.Settings = Settings;
+            this.RuntimeSettings = RuntimeSettings;
         }
 
         public void RunActions()
@@ -100,16 +102,26 @@ namespace Clicker
             {
                 do
                 {
-                    foreach (Action ma in Actions)
+                    RuntimeSettings.Step = 0;
+                    while (RuntimeSettings.Step < Actions.Count && !IsStopRequested)
                     {
-                        if (!IsStopRequested)
-                        {
+                        Action ma = Actions[RuntimeSettings.Step];
+                        if (!RuntimeSettings.Pause)
+                        {                            
                             if (ma.Type == ActionType.Click) ma.RunClick();
                             if (ma.Type == ActionType.Type) ma.RunType();
 
+                            if (!IsStopRequested) { ma.RunCooldown(ref _isStopRequested); }
+                            RuntimeSettings.Step++;
                         }
-
-                        if (!IsStopRequested) { ma.RunCooldown(ref _isStopRequested); }
+                        else
+                        {
+                            System.Threading.Thread.Sleep(1000);
+                        }
+                        if (RuntimeSettings.Reset) {
+                            RuntimeSettings.Step = 0;
+                            RuntimeSettings.Reset = false;
+                        }
                     }
 
                     App.Current?.Dispatcher.Invoke(() =>
