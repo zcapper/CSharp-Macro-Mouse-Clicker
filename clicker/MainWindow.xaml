@@ -13,7 +13,7 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
-            <DataGrid Name="DataGrid" ItemsSource="{Binding MouseActions.Actions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" IsReadOnly="{Binding MouseActions.IsRunning, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Height="236" >
+            <DataGrid Name="DataGrid" ItemsSource="{Binding MouseActions.Actions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" IsReadOnly="{Binding MouseActions.Editable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Height="236" >
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Style.Triggers>

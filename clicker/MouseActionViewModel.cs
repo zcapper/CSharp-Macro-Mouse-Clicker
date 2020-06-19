@@ -26,6 +26,12 @@ namespace Clicker
             }
         }
 
+        public bool Editable {
+            get {
+                return !((IsRunning && RuntimeSettings.Pause) || !IsRunning); 
+            }
+        }
+
         bool _isRunning = false;
 
         /// <summary>
@@ -99,7 +105,6 @@ namespace Clicker
             {
                 do
                 {
-                    RuntimeSettings.Step = 0;
                     while (RuntimeSettings.Step < Actions.Count && !IsStopRequested)
                     {
                         Action ma = Actions[RuntimeSettings.Step];

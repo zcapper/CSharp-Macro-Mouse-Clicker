@@ -84,6 +84,7 @@ namespace Clicker
                     else {
                         if (RuntimeSettings.Pause)
                         {
+                            RuntimeSettings.Step += 1;
                             MouseActions.Actions.Insert(RuntimeSettings.Step, new Action(MouseActions.Actions.Count,
                                 e.X,
                                 e.Y,
@@ -133,7 +134,7 @@ namespace Clicker
 
         private void ClearButton(object sender, RoutedEventArgs e) { MouseActions.Actions.Clear(); TextBox.Text = ""; }
 
-        private void RunButton(object sender, RoutedEventArgs e) { MouseActions.RunActions(); }
+        private void RunButton(object sender, RoutedEventArgs e) { RuntimeSettings.Step = 0; MouseActions.RunActions(); }
 
         private void ResetButton(object sender, RoutedEventArgs e) { 
             RuntimeSettings.Step = 0; 
@@ -146,6 +147,9 @@ namespace Clicker
         private void GoToStepButton(object sender, RoutedEventArgs e) { 
             try {
                 RuntimeSettings.Step = Int32.Parse(TextBox.Text);
+                if (!MouseActions.IsRunning) {
+                    MouseActions.RunActions();
+                }
             } catch (Exception exception) {
                 TextBox.Text = exception.Message;
             }
