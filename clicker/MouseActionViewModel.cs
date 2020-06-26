@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
 
@@ -8,6 +7,8 @@ namespace Clicker
     public class MouseActionViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Action> Actions { get; set; }
+        private Settings Settings;
+        private RuntimeSettings RuntimeSettings;
 
         public bool CanRunOrClear
         {
@@ -22,6 +23,12 @@ namespace Clicker
             get
             {
                 return IsRunning && !IsStopRequested;
+            }
+        }
+
+        public bool Editable {
+            get {
+                return !((IsRunning && RuntimeSettings.Pause) || !IsRunning); 
             }
         }
 
@@ -75,8 +82,7 @@ namespace Clicker
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-
-        public MouseActionViewModel()
+        public MouseActionViewModel(Settings Settings, RuntimeSettings RuntimeSettings)
         {
             Actions = new ObservableCollection<Action>();
 
@@ -86,8 +92,10 @@ namespace Clicker
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CanRunOrClear"));
             };
-        }
 
+            this.Settings = Settings;
+            this.RuntimeSettings = RuntimeSettings;
+        }
 
         public void RunActions()
         {
@@ -95,23 +103,32 @@ namespace Clicker
 
             Thread t = new Thread(() =>
             {
-
-                foreach (Action ma in Actions)
+                do
                 {
-                    if (!IsStopRequested)
+                    while (RuntimeSettings.Step < Actions.Count && !IsStopRequested)
                     {
-                        if (ma.Type == ActionType.Click) ma.RunClick();
-                        if (ma.Type == ActionType.Type) ma.RunType();
+                        Action ma = Actions[RuntimeSettings.Step];
+                        if (!RuntimeSettings.Pause)
+                        {                            
+                            if (ma.Type == ActionType.Click) ma.RunClick();
+                            if (ma.Type == ActionType.Type) ma.RunType();
 
+                            if (!IsStopRequested) { ma.RunCooldown(ref _isStopRequested); }
+                            RuntimeSettings.Step++;
+                        }
+                        else
+                        {
+                            System.Threading.Thread.Sleep(1000);
+                        }
                     }
 
-                    if (!IsStopRequested) { ma.RunCooldown(ref _isStopRequested); }
-                }
+                    RuntimeSettings.Step = 0;
+                    
+                } while (Settings.Autorun && !IsStopRequested);
 
                 App.Current?.Dispatcher.Invoke(() =>
                 {
                     IsRunning = false;
-
                     IsStopRequested = false;
                 });
             });
