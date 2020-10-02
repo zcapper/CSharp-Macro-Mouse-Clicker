@@ -11,7 +11,7 @@
       static public extern bool SetCursorPos(int x, int y);
 
       [System.Runtime.InteropServices.DllImport("user32.dll")]
-      private static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
+      private static extern void Mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
 
       public const int MOUSEEVENTF_LEFTDOWN = 0x0002;
       public const int MOUSEEVENTF_LEFTUP = 0x0004;
@@ -28,9 +28,9 @@
       /// <param name="yPos">Vertical position of mouse cursor.</param>
       /// <param name="ct">Mouse button.</param>
       /// <param name="mouseDown">Simulates mouse press event if true, otherwise mouse release.</param>
-      public static void Click(int xPos, int yPos, ClickType ct, bool mouseDown)
+      public static void Click(int xPos, int yPos, ActionType ct, bool mouseDown)
       {
-        mouse_event(
+        Mouse_event(
           mouseDown ? MouseClickDownDwFlags(ct) : MouseClickUpDwFlags(ct),
           xPos,
           yPos,
@@ -45,11 +45,11 @@
       /// </summary>
       /// <param name="ct">Mouse button.</param>
       /// <returns></returns>
-      public static int MouseClickDownDwFlags(ClickType ct)
+      public static int MouseClickDownDwFlags(ActionType ct)
       {
-        if (ct == ClickType.LeftClick) { return MOUSEEVENTF_LEFTDOWN; }
-        if (ct == ClickType.MiddleClick) { return MOUSEEVENTF_MIDDLEDOWN; }
-        if (ct == ClickType.RightClick) { return MOUSEEVENTF_RIGHTDOWN; }
+        if (ct == ActionType.LeftClick) { return MOUSEEVENTF_LEFTDOWN; }
+        if (ct == ActionType.MiddleClick) { return MOUSEEVENTF_MIDDLEDOWN; }
+        if (ct == ActionType.RightClick) { return MOUSEEVENTF_RIGHTDOWN; }
         return 0x0000;
       }
 
@@ -59,11 +59,11 @@
       /// </summary>
       /// <param name="ct">Mouse button.</param>
       /// <returns></returns>
-      public static int MouseClickUpDwFlags(ClickType ct)
+      public static int MouseClickUpDwFlags(ActionType ct)
       {
-        if (ct == ClickType.LeftClick) { return MOUSEEVENTF_LEFTUP; }
-        if (ct == ClickType.MiddleClick) { return MOUSEEVENTF_MIDDLEUP; }
-        if (ct == ClickType.RightClick) { return MOUSEEVENTF_RIGHTUP; }
+        if (ct == ActionType.LeftClick) { return MOUSEEVENTF_LEFTUP; }
+        if (ct == ActionType.MiddleClick) { return MOUSEEVENTF_MIDDLEUP; }
+        if (ct == ActionType.RightClick) { return MOUSEEVENTF_RIGHTUP; }
         return 0x0000;
       }
     }

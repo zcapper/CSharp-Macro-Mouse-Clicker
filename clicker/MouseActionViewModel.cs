@@ -109,9 +109,15 @@ namespace Clicker
                     {
                         Action ma = Actions[RuntimeSettings.Step];
                         if (!RuntimeSettings.Pause)
-                        {                            
-                            if (ma.Type == ActionType.Click) ma.RunClick();
-                            if (ma.Type == ActionType.Type) ma.RunType();
+                        {
+                            if (ma.ActionType == ActionType.Type)
+                            {
+                                ma.RunType();
+                            }
+                            else
+                            {
+                                ma.RunClick();
+                            }
 
                             if (!IsStopRequested) { ma.RunCooldown(ref _isStopRequested); }
                             RuntimeSettings.Step++;

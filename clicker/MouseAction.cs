@@ -24,12 +24,10 @@ namespace Clicker
         /// </summary>
         public TimeSpan Cooldown { get; set; }
 
-        public ActionType Type { get; set; }
-
         /// <summary>
         /// The mouse button to use when simulating a click.
         /// </summary>
-        public ClickType Button { get; set; }
+        public ActionType ActionType { get; set; }
 
         public string Text { get; set; }
 
@@ -39,14 +37,13 @@ namespace Clicker
         /// <param name="xPosition">Horizonal position of mouse cursor</param>
         /// <param name="yPosition">Vertical position of mouse cursor</param>
         /// <param name="cooldown">Time to wait after performing action</param>
-        public Action(int index, int xPosition, int yPosition, TimeSpan cooldown, ClickType button = ClickType.LeftClick, ActionType type = ActionType.Click, string text = null)
+        public Action(int index, int xPosition, int yPosition, TimeSpan cooldown, ActionType action = ActionType.LeftClick, string text = null)
         {
             Index = index;
             XPosition = xPosition;
             YPosition = yPosition;
             Cooldown = cooldown;
-            Type = type;
-            Button = button;
+            ActionType = action;
             Text = text;
         }
 
@@ -57,11 +54,11 @@ namespace Clicker
         {
             MouseClickHelper.SetCursorPos(XPosition, YPosition);
 
-            MouseClickHelper.Click(XPosition, YPosition, Button, true);
+            MouseClickHelper.Click(XPosition, YPosition, ActionType, true);
 
             System.Threading.Thread.Sleep(1);
 
-            MouseClickHelper.Click(XPosition, YPosition, Button, false);
+            MouseClickHelper.Click(XPosition, YPosition, ActionType, false);
         }
 
         /// <summary>
@@ -109,14 +106,9 @@ namespace Clicker
 
     public enum ActionType
     {
-        Click,
-        Type
-    }
-
-    public enum ClickType
-    {
         LeftClick,
         MiddleClick,
-        RightClick
+        RightClick,
+        Type
     }
 }
