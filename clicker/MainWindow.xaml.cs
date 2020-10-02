@@ -56,10 +56,9 @@ namespace Clicker
                     var xPosition = (int)action["XPosition"];
                     var yPosition = (int)action["YPosition"];
                     var cooldown = (TimeSpan)action["Cooldown"];
-                    var type = (ActionType)(int)action["Type"];
-                    var clickType = (ClickType)(int)action["Button"];
+                    var actionType = (ActionType)(int)action["Button"];
                     var text = (string)action["Text"];
-                    MouseActions.Actions.Add(new Action(MouseActions.Actions.Count,xPosition, yPosition, cooldown, clickType, type, text));
+                    MouseActions.Actions.Add(new Action(MouseActions.Actions.Count,xPosition, yPosition, cooldown, actionType, text));
                 }
 
                 if (Settings.Autorun) MouseActions.RunActions();
